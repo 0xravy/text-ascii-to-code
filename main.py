@@ -2,30 +2,30 @@ import datetime
 import glob
 import os
 
-def removeAllOutput(files):
+def remove_all_output(files):
     for file in files:
         os.remove(file)
 
-def ascii_to_code(fileName):
-    if not os.path.exists(fileName):
-        with open(fileName, "w") as ascii_file:
-            ascii_file.write("")
+def ascii_to_code(file_name):
+    if not os.path.exists(file_name):
+        with open(file_name, "w"):
+            pass  # Create an empty file if it doesn't exist
 
-    if not os.path.exists(fileName):
-        print("File '{}' does not exist.".format(fileName))
+    if not os.path.exists(file_name):
+        print("File '{}' does not exist.".format(file_name))
         return
 
-    with open(fileName, "r") as file:
+    with open(file_name, "r") as file:
         text = file.read()
-        if ("".join(text.split())) == "":
-            print("File '{}' is empty.".format(fileName))
+        if not text.strip():  # Check if the file is empty
+            print("File '{}' is empty.".format(file_name))
             return
 
-        textArr = text.split("\n")
+        text_arr = text.split("\n")
 
-    newText = ""
+    new_text = ""
 
-    for txt in textArr:
+    for txt in text_arr:
         if txt == "":
             continue
 
@@ -33,22 +33,24 @@ def ascii_to_code(fileName):
         txt = txt.replace("\"", "\\\"") 
         txt = txt.replace("\'", "\\\'") 
 
-        newText += "\"" + txt + "\",\n"
+        new_text += "\"" + txt + "\",\n"
 
-    if not os.path.exists("outputs"):
-        os.makedirs("outputs")
+    output_dir = os.path.join(os.getcwd(), "outputs")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     current_time = datetime.datetime.now().strftime("[%H:%M:%S]")
-    output_file_name = "./outputs/output_" + current_time + ".txt"
+    output_file_name = os.path.join(output_dir, "output_" + current_time + ".txt")
 
     with open(output_file_name, "w") as output_file:
-        output_file.write(newText)
+        output_file.write(new_text)
 
     print("File [{}] created successfully.".format(output_file_name))
 
-outputFiles = glob.glob("./outputs/output*")
+output_files = glob.glob(os.path.join(os.getcwd(), "outputs", "output*"))
 # Uncomment the following code if you want to remove existing output files
-# removeAllOutput(outputFiles)
+# remove_all_output(output_files)
 
 # This will convert normal ASCII to ASCII codes
 ascii_to_code("ascii.txt")
+
